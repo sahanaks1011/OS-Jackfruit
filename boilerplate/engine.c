@@ -437,9 +437,51 @@ static int run_supervisor(const char *rootfs)
  */
 static int send_control_request(const control_request_t *req)
 {
-    (void)req;
-    fprintf(stderr, "Control-plane client path not implemented.\n");
-    return 1;
+    int fd;
+
+    fd = open("/dev/container_monitor", O_RDWR);
+    if (fd < 0) {
+        perror("open");
+        return 1;
+    }
+
+    if (req->kind == CMD_RUN || req->kind == CMD_START) {
+
+        struct monitor_request mreq;
+
+        memset(&mreq, 0, sizeof(mreq));
+
+        mreq.pid = getpid();
+        mreq.soft_limit_bytes = req->soft_limit_bytes;
+        mreq.hard_limit_bytes = req->hard_limit_bytes;
+
+        strncpy(mreq.container_id,
+                req->container_id,
+                sizeof(mreq.container_id) - 1);
+
+        printf("[engine] Registering container %s (pid=%d)\n",
+               mreq.container_id, mreq.pid);
+
+        if (ioctl(fd, MONITOR_REGISTER, &mreq) < 0) {
+            perror("ioctl REGISTER");
+            close(fd);
+            return 1;
+        }
+
+        /* Simulate workload */
+        printf("[engine] Simulating workload...\n");
+        sleep(5);
+
+        printf("[engine] Unregistering container %s\n",
+               mreq.container_id);
+
+        if (ioctl(fd, MONITOR_UNREGISTER, &mreq) < 0) {
+            perror("ioctl UNREGISTER");
+        }
+    }
+
+    close(fd);
+    return 0;
 }
 
 static int cmd_start(int argc, char *argv[])

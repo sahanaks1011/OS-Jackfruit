@@ -240,14 +240,6 @@ This demonstrates Linux’s fair scheduling and priority-based adjustments.
 
 ---
 
-## Notes
-
-* All screenshots were captured from the VM environment
-* The system successfully demonstrates container runtime behavior, monitoring, and scheduling
-* Additional experiments can be extended further if needed
-
----
-
 ## Conclusion
 
 This project demonstrates a functional container runtime with:

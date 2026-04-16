@@ -7,9 +7,6 @@
  * The program burns CPU and prints progress once per second so students
  * can compare completion times and responsiveness under different
  * priorities or CPU-affinity settings.
- *
- * If you copy this binary into an Alpine rootfs, make sure it is built in a
- * format that can run there.
  */
 
 #include <stdio.h>

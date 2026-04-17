@@ -5,24 +5,22 @@
  *   /io_pulse [iterations] [sleep_ms]
  *
  * The program writes small bursts to a file and sleeps between them.
- * This gives students an easy I/O-heavy workload to compare with
- * cpu_hog when discussing responsiveness and scheduler behavior.
  */
 
-#include <fcntl.h>
+#include <fcntl.h> //file operations(open), flags like (O_CREAT)
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdlib.h> //strtoul()
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <unistd.h>
+#include <unistd.h> //write, close, usleep
 
 #define DEFAULT_OUTPUT "/tmp/io_pulse.out"
 
 static unsigned int parse_uint(const char *arg, unsigned int fallback)
 {
     char *end = NULL;
-    unsigned long value = strtoul(arg, &end, 10);
+    unsigned long value = strtoul(arg, &end, 10); //converts input string into int
 
     if (!arg || *arg == '\0' || (end && *end != '\0') || value == 0)
         return fallback;
@@ -32,7 +30,7 @@ static unsigned int parse_uint(const char *arg, unsigned int fallback)
 int main(int argc, char *argv[])
 {
     const unsigned int iterations = (argc > 1) ? parse_uint(argv[1], 20) : 20;
-    const unsigned int sleep_ms = (argc > 2) ? parse_uint(argv[2], 200) : 200;
+    const unsigned int sleep_ms = (argc > 2) ? parse_uint(argv[2], 200) : 200; //200ms 
     int fd;
     unsigned int i;
 
